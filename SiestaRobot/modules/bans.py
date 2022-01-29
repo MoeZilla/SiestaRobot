@@ -62,8 +62,10 @@ def ban(update: Update, context: CallbackContext) -> str:
     args = context.args
     reason = ""
     if message.reply_to_message and message.reply_to_message.sender_chat:
-        r = bot.ban_chat_sender_chat(chat_id=chat.id, sender_chat_id=message.reply_to_message.sender_chat.id)
-        if r:
+        if r := bot.ban_chat_sender_chat(
+            chat_id=chat.id,
+            sender_chat_id=message.reply_to_message.sender_chat.id,
+        ):
             message.reply_text("Channel {} was banned successfully from {}".format(
                 html.escape(message.reply_to_message.sender_chat.title),
                 html.escape(chat.title)
@@ -374,8 +376,7 @@ def punch(update: Update, context: CallbackContext) -> str:
         message.reply_text("I really wish I could punch this user....")
         return log_message
 
-    res = chat.unban_member(user_id)  # unban on current user = kick
-    if res:
+    if res := chat.unban_member(user_id):
         # bot.send_sticker(chat.id, BAN_STICKER)  # banhammer marie sticker
         bot.sendMessage(
             chat.id,
@@ -408,8 +409,7 @@ def punchme(update: Update, context: CallbackContext):
         update.effective_message.reply_text("I wish I could... but you're an admin.")
         return
 
-    res = update.effective_chat.unban_member(user_id)  # unban on current user = kick
-    if res:
+    if res := update.effective_chat.unban_member(user_id):
         update.effective_message.reply_text(
             "punches you out of the group!!",
         )
@@ -430,8 +430,10 @@ def unban(update: Update, context: CallbackContext) -> Optional[str]:
     log_message = ""
     bot, args = context.bot, context.args
     if message.reply_to_message and message.reply_to_message.sender_chat:
-        r = bot.unban_chat_sender_chat(chat_id=chat.id, sender_chat_id=message.reply_to_message.sender_chat.id)
-        if r:
+        if r := bot.unban_chat_sender_chat(
+            chat_id=chat.id,
+            sender_chat_id=message.reply_to_message.sender_chat.id,
+        ):
             message.reply_text("Channel {} was unbanned successfully from {}".format(
                 html.escape(message.reply_to_message.sender_chat.title),
                 html.escape(chat.title)
@@ -534,8 +536,7 @@ def banme(update: Update, context: CallbackContext):
         update.effective_message.reply_text("⚠️ I cannot banned admin.")
         return
 
-    res = update.effective_chat.ban_member(user_id)
-    if res:
+    if res := update.effective_chat.ban_member(user_id):
         update.effective_message.reply_text("Yes, you're right! GTFO..")
         return (
             "<b>{}:</b>"

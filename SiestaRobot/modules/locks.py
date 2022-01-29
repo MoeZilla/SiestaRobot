@@ -153,9 +153,9 @@ def lock(update, context) -> str:
         if len(args) >= 1:
             ltype = args[0].lower()
             if ltype in LOCK_TYPES:
-                # Connection check
-                conn = connected(context.bot, update, chat, user.id, need_admin=True)
-                if conn:
+                if conn := connected(
+                    context.bot, update, chat, user.id, need_admin=True
+                ):
                     chat = dispatcher.bot.getChat(conn)
                     chat_id = conn
                     chat_name = chat.title
@@ -186,9 +186,9 @@ def lock(update, context) -> str:
                 )
 
             if ltype in LOCK_CHAT_RESTRICTION:
-                # Connection check
-                conn = connected(context.bot, update, chat, user.id, need_admin=True)
-                if conn:
+                if conn := connected(
+                    context.bot, update, chat, user.id, need_admin=True
+                ):
                     chat = dispatcher.bot.getChat(conn)
                     chat_id = conn
                     chat_name = chat.title
@@ -255,9 +255,9 @@ def unlock(update, context) -> str:
         if len(args) >= 1:
             ltype = args[0].lower()
             if ltype in LOCK_TYPES:
-                # Connection check
-                conn = connected(context.bot, update, chat, user.id, need_admin=True)
-                if conn:
+                if conn := connected(
+                    context.bot, update, chat, user.id, need_admin=True
+                ):
                     chat = dispatcher.bot.getChat(conn)
                     chat_id = conn
                     chat_name = chat.title
@@ -287,9 +287,9 @@ def unlock(update, context) -> str:
                 )
 
             if ltype in UNLOCK_CHAT_RESTRICTION:
-                # Connection check
-                conn = connected(context.bot, update, chat, user.id, need_admin=True)
-                if conn:
+                if conn := connected(
+                    context.bot, update, chat, user.id, need_admin=True
+                ):
                     chat = dispatcher.bot.getChat(conn)
                     chat_id = conn
                     chat_name = chat.title
@@ -432,7 +432,6 @@ def build_lock_message(chat_id):
     locks = sql.get_locks(chat_id)
     res = ""
     locklist = []
-    permslist = []
     if locks:
         res += "*" + "These are the current locks in this Chat:" + "*"
         locklist.append("sticker = `{}`".format(locks.sticker))
@@ -453,14 +452,16 @@ def build_lock_message(chat_id):
         locklist.append("egame = `{}`".format(locks.egame))
         locklist.append("inline = `{}`".format(locks.inline))
     permissions = dispatcher.bot.get_chat(chat_id).permissions
-    permslist.append("messages = `{}`".format(permissions.can_send_messages))
-    permslist.append("media = `{}`".format(permissions.can_send_media_messages))
-    permslist.append("poll = `{}`".format(permissions.can_send_polls))
-    permslist.append("other = `{}`".format(permissions.can_send_other_messages))
-    permslist.append("previews = `{}`".format(permissions.can_add_web_page_previews))
-    permslist.append("info = `{}`".format(permissions.can_change_info))
-    permslist.append("invite = `{}`".format(permissions.can_invite_users))
-    permslist.append("pin = `{}`".format(permissions.can_pin_messages))
+    permslist = [
+        "messages = `{}`".format(permissions.can_send_messages),
+        "media = `{}`".format(permissions.can_send_media_messages),
+        "poll = `{}`".format(permissions.can_send_polls),
+        "other = `{}`".format(permissions.can_send_other_messages),
+        "previews = `{}`".format(permissions.can_add_web_page_previews),
+        "info = `{}`".format(permissions.can_change_info),
+        "invite = `{}`".format(permissions.can_invite_users),
+        "pin = `{}`".format(permissions.can_pin_messages),
+    ]
 
     if locklist:
         # Ordering lock list

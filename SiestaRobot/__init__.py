@@ -49,9 +49,7 @@ if sys.version_info[0] < 3 or sys.version_info[1] < 9:
     )
     sys.exit(1)
 
-ENV = bool(os.environ.get("ENV", False))
-
-if ENV:
+if ENV := bool(os.environ.get("ENV", False)):
     TOKEN = os.environ.get("TOKEN", None)
 
     try:
@@ -257,8 +255,7 @@ pbot = Client(
     bot_token=TOKEN,
     workers=min(32, os.cpu_count() + 4),
 )
-apps = []
-apps.append(pbot)
+apps = [pbot]
 loop = asyncio.get_event_loop()
 
 async def get_entity(client, entity):
